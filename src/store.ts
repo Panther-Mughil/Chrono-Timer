@@ -14,6 +14,7 @@ export interface Timer {
 interface AppState {
   timers: Timer[];
   coins: number;
+  unlockedItems: number[];
   activeTab: 'timer' | 'shop';
   focusSeconds: number; // accumulator for coins
   
@@ -24,6 +25,7 @@ interface AppState {
   resetTimer: (id: string) => void;
   tick: () => void;
   addCoins: (amount: number) => void;
+  unlockItem: (id: number, cost: number) => void;
   setActiveTab: (tab: 'timer' | 'shop') => void;
 }
 
@@ -32,6 +34,7 @@ export const useStore = create<AppState>()(
     (set) => ({
       timers: [],
       coins: 0,
+      unlockedItems: [],
       activeTab: 'timer',
       focusSeconds: 0,
 
@@ -83,6 +86,15 @@ export const useStore = create<AppState>()(
       }),
 
       addCoins: (amount) => set((state) => ({ coins: state.coins + amount })),
+      unlockItem: (id, cost) => set((state) => {
+        if (state.coins >= cost && !state.unlockedItems.includes(id)) {
+          return {
+            coins: state.coins - cost,
+            unlockedItems: [...state.unlockedItems, id]
+          };
+        }
+        return state;
+      }),
       setActiveTab: (tab) => set({ activeTab: tab })
     }),
     {

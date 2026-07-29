@@ -10,7 +10,7 @@ const formatTime = (seconds: number) => {
 };
 
 function App() {
-  const { activeTab, setActiveTab, coins, tick, timers, addTimer, removeTimer, updateTimerStatus, resetTimer } = useStore();
+  const { activeTab, setActiveTab, coins, tick, timers, addTimer, removeTimer, updateTimerStatus, resetTimer, unlockedItems, unlockItem } = useStore();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [newTimerName, setNewTimerName] = useState('Focus');
   const [newTimerDuration, setNewTimerDuration] = useState('25');
@@ -96,18 +96,24 @@ function App() {
               { id: 4, name: 'Diamond Gem', price: 500, icon: '💎' },
               { id: 5, name: 'Rocket Ship', price: 1000, icon: '🚀' },
               { id: 6, name: 'Zen Master', price: 5000, icon: '🧘' },
-            ].map(item => (
-              <div key={item.id} className="shop-item">
+            ].map(item => {
+              const isUnlocked = unlockedItems.includes(item.id);
+              return (
+              <div key={item.id} className={`shop-item ${isUnlocked ? 'unlocked' : ''}`}>
                 <div className="shop-item-img">{item.icon}</div>
                 <div className="shop-item-title">{item.name}</div>
                 <div className="shop-item-price">
                   <Hexagon size={14} /> {item.price}
                 </div>
-                <button className="buy-btn" disabled={coins < item.price}>
-                  {coins >= item.price ? 'Unlock' : 'Locked'}
+                <button 
+                  className="buy-btn" 
+                  disabled={isUnlocked || coins < item.price}
+                  onClick={() => unlockItem(item.id, item.price)}
+                >
+                  {isUnlocked ? 'Owned' : (coins >= item.price ? 'Unlock' : 'Locked')}
                 </button>
               </div>
-            ))}
+            )})}
           </div>
         )}
       </main>

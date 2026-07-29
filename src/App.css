@@ -221,7 +221,21 @@ body {
 
 .shop-item-img {
   font-size: 2.5rem;
-  filter: grayscale(0.2);
+  filter: grayscale(1);
+  opacity: 0.5;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.shop-item.unlocked {
+  border-color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.02);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.shop-item.unlocked .shop-item-img {
+  filter: grayscale(0);
+  opacity: 1;
+  transform: scale(1.15);
 }
 
 .shop-item-title {
@@ -259,6 +273,12 @@ body {
   border-color: var(--border-color);
   color: var(--text-secondary);
   cursor: not-allowed;
+}
+
+.shop-item.unlocked .buy-btn:disabled {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  opacity: 0.6;
 }
 
 /* Floating Glass Bottom Nav */
