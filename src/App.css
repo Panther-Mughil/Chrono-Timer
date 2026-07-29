@@ -103,9 +103,8 @@ body {
 
 /* Timer Grid */
 .timer-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 32px;
   width: 100%;
   max-width: 1400px;
@@ -116,8 +115,7 @@ body {
   background-color: var(--surface-color);
   border-radius: var(--radius);
   padding: 32px;
-  width: 300px;
-  flex-shrink: 0;
+  width: 100%;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
