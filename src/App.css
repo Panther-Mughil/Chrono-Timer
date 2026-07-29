@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 :root {
   --bg-color: #050505;
   --surface-color: #121212;
@@ -115,7 +119,6 @@ body {
   background-color: var(--surface-color);
   border-radius: var(--radius);
   padding: 32px;
-  width: 100%;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
