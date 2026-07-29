@@ -1,7 +1,23 @@
-# Tauri + React + Typescript
+# Chrono-Timer
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+Chrono-Timer is a gamified focus timer application designed to boost your productivity. Stay focused, earn coins for your dedicated time, and unlock awesome collectibles!
 
-## Recommended IDE Setup
+## Features
+- ⏱️ **Custom Timers**: Create multiple timers of varying lengths to suit your workflow.
+- ⏯️ **Full Control**: Start, pause, stop, edit, and delete timers with ease.
+- 🪙 **Earn Rewards**: Earn 1 coin for every minute you focus.
+- 🎁 **Collectibles Shop**: Spend your hard-earned coins to unlock exclusive items and build your collection (initially featuring placeholder images).
+- 🎨 **Premium UI**: Enjoy a modern, dynamic, and visually stunning interface.
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+## Tech Stack
+*To Be Determined* - Awaiting final confirmation.
+
+## Getting Started
+*(Setup instructions will be added once the tech stack is finalized)*
+
+## Roadmap
+- [x] Initial Project Setup
+- [ ] UI/UX Design System Implementation
+- [ ] Timer Logic and State Management
+- [ ] Rewards and Coin Economy (1 coin/min)
+- [ ] Collectibles Shop Integration
