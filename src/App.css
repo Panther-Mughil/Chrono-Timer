@@ -103,23 +103,27 @@ body {
 
 /* Timer Grid */
 .timer-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 32px;
   width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .timer-card {
   background-color: var(--surface-color);
   border-radius: var(--radius);
   padding: 32px;
-  width: 100%;
+  width: 300px;
+  flex-shrink: 0;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: 24px;
   border: 1px solid var(--border-color);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .timer-card:hover {
