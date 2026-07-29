@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useStore } from './store';
-import { Moon, Sun, Plus, Coins, Timer as TimerIcon, Store, Play, Pause, Square, Trash2 } from 'lucide-react';
+import { Moon, Sun, Plus, Timer as TimerIcon, Store, Play, Pause, Square, Trash2, Hexagon } from 'lucide-react';
 import './App.css';
 
 const formatTime = (seconds: number) => {
@@ -39,10 +39,10 @@ function App() {
   return (
     <div className="app-container">
       <header className="header">
-        <h1>Chrono-Timer</h1>
+        <h1>Chrono</h1>
         <div className="header-actions">
           <div className="coin-display">
-            <Coins size={18} />
+            <Hexagon size={16} strokeWidth={2.5} />
             <span>{coins}</span>
           </div>
           <button className="icon-btn" onClick={() => setAddModalOpen(true)} title="Add Timer">
@@ -59,16 +59,15 @@ function App() {
           <div className="timer-list">
             {timers.length === 0 ? (
               <div className="empty-state">
-                <TimerIcon size={48} opacity={0.5} />
-                <p>No timers yet. Click the + icon to create one!</p>
+                No active timers
               </div>
             ) : (
               timers.map(timer => (
                 <div key={timer.id} className="timer-card">
                   <div className="timer-header">
                     <h3 className="timer-name">{timer.name}</h3>
-                    <button className="icon-btn" style={{color: 'var(--danger-color)'}} onClick={() => removeTimer(timer.id)}>
-                      <Trash2 size={16} />
+                    <button className="icon-btn" onClick={() => removeTimer(timer.id)}>
+                      <Trash2 size={18} />
                     </button>
                   </div>
                   <div className="timer-time">
@@ -77,15 +76,15 @@ function App() {
                   <div className="timer-controls">
                     {timer.status === 'running' ? (
                       <button className="control-btn active" onClick={() => updateTimerStatus(timer.id, 'paused')}>
-                        <Pause size={20} />
+                        <Pause size={20} fill="currentColor" />
                       </button>
                     ) : (
                       <button className="control-btn" onClick={() => updateTimerStatus(timer.id, 'running')}>
-                        <Play size={20} />
+                        <Play size={20} fill="currentColor" />
                       </button>
                     )}
-                    <button className="control-btn danger" onClick={() => resetTimer(timer.id)}>
-                      <Square size={20} />
+                    <button className="control-btn" onClick={() => resetTimer(timer.id)}>
+                      <Square size={18} fill="currentColor" />
                     </button>
                   </div>
                 </div>
@@ -108,10 +107,10 @@ function App() {
                 <div className="shop-item-img">{item.icon}</div>
                 <div className="shop-item-title">{item.name}</div>
                 <div className="shop-item-price">
-                  <Coins size={14} /> {item.price}
+                  <Hexagon size={14} /> {item.price}
                 </div>
                 <button className="buy-btn" disabled={coins < item.price}>
-                  {coins >= item.price ? 'Purchase' : 'Locked'}
+                  {coins >= item.price ? 'Unlock' : 'Locked'}
                 </button>
               </div>
             ))}
@@ -121,11 +120,12 @@ function App() {
 
       <nav className="bottom-nav">
         <button className={`nav-item ${activeTab === 'timer' ? 'active' : ''}`} onClick={() => setActiveTab('timer')}>
-          <TimerIcon size={24} />
-          <span>Timers</span>
+          <TimerIcon size={18} />
+          <span>Timer</span>
         </button>
+        <div className="nav-separator" />
         <button className={`nav-item ${activeTab === 'shop' ? 'active' : ''}`} onClick={() => setActiveTab('shop')}>
-          <Store size={24} />
+          <Store size={18} />
           <span>Shop</span>
         </button>
       </nav>
@@ -133,7 +133,7 @@ function App() {
       {isAddModalOpen && (
         <div className="modal-overlay" onClick={() => setAddModalOpen(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <h3 style={{margin: 0}}>Create Timer</h3>
+            <h3 style={{margin: 0, fontSize: '1.1rem', fontWeight: 600}}>Create Timer</h3>
             <input 
               type="text" 
               placeholder="Timer Name (e.g., Focus)" 
@@ -149,7 +149,7 @@ function App() {
             />
             <div className="modal-actions">
               <button className="btn secondary" onClick={() => setAddModalOpen(false)}>Cancel</button>
-              <button className="btn primary" onClick={handleAddTimer}>Add</button>
+              <button className="btn primary" onClick={handleAddTimer}>Add Timer</button>
             </div>
           </div>
         </div>
