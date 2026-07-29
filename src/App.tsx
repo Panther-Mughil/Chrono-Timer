@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useStore } from './store';
-import { Moon, Sun, Plus, Timer as TimerIcon, Store, Play, Pause, Square, Trash2, Hexagon } from 'lucide-react';
+import { Plus, Timer as TimerIcon, Store, Play, Pause, Square, Trash2, Hexagon } from 'lucide-react';
 import './App.css';
 
 const formatTime = (seconds: number) => {
@@ -10,7 +10,7 @@ const formatTime = (seconds: number) => {
 };
 
 function App() {
-  const { theme, toggleTheme, activeTab, setActiveTab, coins, tick, timers, addTimer, removeTimer, updateTimerStatus, resetTimer } = useStore();
+  const { activeTab, setActiveTab, coins, tick, timers, addTimer, removeTimer, updateTimerStatus, resetTimer } = useStore();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [newTimerName, setNewTimerName] = useState('Focus');
   const [newTimerDuration, setNewTimerDuration] = useState('25');
@@ -21,10 +21,6 @@ function App() {
     }, 1000);
     return () => clearInterval(interval);
   }, [tick]);
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
 
   const handleAddTimer = () => {
     const duration = parseInt(newTimerDuration) * 60;
@@ -47,9 +43,6 @@ function App() {
           </div>
           <button className="icon-btn" onClick={() => setAddModalOpen(true)} title="Add Timer">
             <Plus size={20} />
-          </button>
-          <button className="icon-btn" onClick={toggleTheme} title="Toggle Theme">
-            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
           </button>
         </div>
       </header>

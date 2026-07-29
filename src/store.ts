@@ -14,7 +14,6 @@ export interface Timer {
 interface AppState {
   timers: Timer[];
   coins: number;
-  theme: 'light' | 'dark';
   activeTab: 'timer' | 'shop';
   focusSeconds: number; // accumulator for coins
   
@@ -25,7 +24,6 @@ interface AppState {
   resetTimer: (id: string) => void;
   tick: () => void;
   addCoins: (amount: number) => void;
-  toggleTheme: () => void;
   setActiveTab: (tab: 'timer' | 'shop') => void;
 }
 
@@ -34,7 +32,6 @@ export const useStore = create<AppState>()(
     (set) => ({
       timers: [],
       coins: 0,
-      theme: 'dark',
       activeTab: 'timer',
       focusSeconds: 0,
 
@@ -86,7 +83,6 @@ export const useStore = create<AppState>()(
       }),
 
       addCoins: (amount) => set((state) => ({ coins: state.coins + amount })),
-      toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
       setActiveTab: (tab) => set({ activeTab: tab })
     }),
     {
