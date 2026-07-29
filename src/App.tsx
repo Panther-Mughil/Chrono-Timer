@@ -1,50 +1,160 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
-import "./App.css";
+import { useEffect, useState } from 'react';
+import { useStore } from './store';
+import { Moon, Sun, Plus, Coins, Timer as TimerIcon, Store, Play, Pause, Square, Trash2 } from 'lucide-react';
+import './App.css';
+
+const formatTime = (seconds: number) => {
+  const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+  const s = (seconds % 60).toString().padStart(2, '0');
+  return `${m}:${s}`;
+};
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const { theme, toggleTheme, activeTab, setActiveTab, coins, tick, timers, addTimer, removeTimer, updateTimerStatus, resetTimer } = useStore();
+  const [isAddModalOpen, setAddModalOpen] = useState(false);
+  const [newTimerName, setNewTimerName] = useState('Focus');
+  const [newTimerDuration, setNewTimerDuration] = useState('25');
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+  useEffect(() => {
+    const interval = setInterval(() => {
+      tick();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [tick]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const handleAddTimer = () => {
+    const duration = parseInt(newTimerDuration) * 60;
+    if (duration > 0) {
+      addTimer(duration, newTimerName);
+    }
+    setAddModalOpen(false);
+    setNewTimerName('Focus');
+    setNewTimerDuration('25');
+  };
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <div className="app-container">
+      <header className="header">
+        <h1>Chrono-Timer</h1>
+        <div className="header-actions">
+          <div className="coin-display">
+            <Coins size={18} />
+            <span>{coins}</span>
+          </div>
+          <button className="icon-btn" onClick={() => setAddModalOpen(true)} title="Add Timer">
+            <Plus size={20} />
+          </button>
+          <button className="icon-btn" onClick={toggleTheme} title="Toggle Theme">
+            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+          </button>
+        </div>
+      </header>
 
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+      <main className="main-content">
+        {activeTab === 'timer' && (
+          <div className="timer-list">
+            {timers.length === 0 ? (
+              <div className="empty-state">
+                <TimerIcon size={48} opacity={0.5} />
+                <p>No timers yet. Click the + icon to create one!</p>
+              </div>
+            ) : (
+              timers.map(timer => (
+                <div key={timer.id} className="timer-card">
+                  <div className="timer-header">
+                    <h3 className="timer-name">{timer.name}</h3>
+                    <button className="icon-btn" style={{color: 'var(--danger-color)'}} onClick={() => removeTimer(timer.id)}>
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                  <div className="timer-time">
+                    {formatTime(timer.remaining)}
+                  </div>
+                  <div className="timer-controls">
+                    {timer.status === 'running' ? (
+                      <button className="control-btn active" onClick={() => updateTimerStatus(timer.id, 'paused')}>
+                        <Pause size={20} />
+                      </button>
+                    ) : (
+                      <button className="control-btn" onClick={() => updateTimerStatus(timer.id, 'running')}>
+                        <Play size={20} />
+                      </button>
+                    )}
+                    <button className="control-btn danger" onClick={() => resetTimer(timer.id)}>
+                      <Square size={20} />
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
 
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+        {activeTab === 'shop' && (
+          <div className="shop-grid">
+            {[
+              { id: 1, name: 'Bronze Trophy', price: 10, icon: '🏆' },
+              { id: 2, name: 'Silver Badge', price: 50, icon: '🥈' },
+              { id: 3, name: 'Gold Crown', price: 100, icon: '👑' },
+              { id: 4, name: 'Diamond Gem', price: 500, icon: '💎' },
+              { id: 5, name: 'Rocket Ship', price: 1000, icon: '🚀' },
+              { id: 6, name: 'Zen Master', price: 5000, icon: '🧘' },
+            ].map(item => (
+              <div key={item.id} className="shop-item">
+                <div className="shop-item-img">{item.icon}</div>
+                <div className="shop-item-title">{item.name}</div>
+                <div className="shop-item-price">
+                  <Coins size={14} /> {item.price}
+                </div>
+                <button className="buy-btn" disabled={coins < item.price}>
+                  {coins >= item.price ? 'Purchase' : 'Locked'}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+
+      <nav className="bottom-nav">
+        <button className={`nav-item ${activeTab === 'timer' ? 'active' : ''}`} onClick={() => setActiveTab('timer')}>
+          <TimerIcon size={24} />
+          <span>Timers</span>
+        </button>
+        <button className={`nav-item ${activeTab === 'shop' ? 'active' : ''}`} onClick={() => setActiveTab('shop')}>
+          <Store size={24} />
+          <span>Shop</span>
+        </button>
+      </nav>
+
+      {isAddModalOpen && (
+        <div className="modal-overlay" onClick={() => setAddModalOpen(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h3 style={{margin: 0}}>Create Timer</h3>
+            <input 
+              type="text" 
+              placeholder="Timer Name (e.g., Focus)" 
+              value={newTimerName} 
+              onChange={e => setNewTimerName(e.target.value)} 
+            />
+            <input 
+              type="number" 
+              placeholder="Duration in minutes" 
+              value={newTimerDuration} 
+              onChange={e => setNewTimerDuration(e.target.value)}
+              min="1"
+            />
+            <div className="modal-actions">
+              <button className="btn secondary" onClick={() => setAddModalOpen(false)}>Cancel</button>
+              <button className="btn primary" onClick={handleAddTimer}>Add</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
