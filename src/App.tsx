@@ -49,13 +49,13 @@ function App() {
 
       <main className="main-content">
         {activeTab === 'timer' && (
-          <div className="timer-list">
-            {timers.length === 0 ? (
-              <div className="empty-state">
-                No active timers
-              </div>
-            ) : (
-              timers.map(timer => (
+          timers.length === 0 ? (
+            <div className="empty-state">
+              No active timers
+            </div>
+          ) : (
+            <div className="timer-grid">
+              {timers.map(timer => (
                 <div key={timer.id} className="timer-card">
                   <div className="timer-header">
                     <h3 className="timer-name">{timer.name}</h3>
@@ -82,8 +82,9 @@ function App() {
                   </div>
                 </div>
               ))
-            )}
-          </div>
+            }
+            </div>
+          )
         )}
 
         {activeTab === 'shop' && (

@@ -101,12 +101,12 @@ body {
   padding: 24px 32px 120px 32px;
 }
 
-/* Timer List */
-.timer-list {
-  display: flex;
-  flex-direction: column;
+/* Timer Grid */
+.timer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 24px;
-  align-items: center;
+  width: 100%;
 }
 
 .timer-card {
@@ -114,7 +114,6 @@ body {
   border-radius: var(--radius);
   padding: 32px;
   width: 100%;
-  max-width: 360px;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
