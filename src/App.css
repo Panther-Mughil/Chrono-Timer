@@ -406,21 +406,18 @@ body {
 /* Mini Mode */
 .mini-mode-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
   height: 100vh;
   width: 100vw;
-  background-color: var(--bg-color);
-  padding: 16px;
+  background-color: var(--surface-color);
+  padding: 32px;
+  box-sizing: border-box;
   -webkit-app-region: drag; /* Allows the user to drag the window natively */
+  border: 1px solid var(--border-color); /* Subtle border matching the cards */
 }
 
 /* Ensure controls inside drag regions remain clickable */
 .mini-mode-container button {
   -webkit-app-region: no-drag;
-}
-
-.mini-card {
-  padding: 24px;
-  gap: 16px;
 }

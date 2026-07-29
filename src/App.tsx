@@ -25,9 +25,11 @@ function App() {
         await appWindow.setMinSize(new LogicalSize(320, 240));
         await appWindow.setSize(new LogicalSize(320, 240));
         await appWindow.setAlwaysOnTop(true);
+        await appWindow.setDecorations(false);
         setMiniTimerId(timerId);
         setIsMiniMode(true);
       } else {
+        await appWindow.setDecorations(true);
         await appWindow.setAlwaysOnTop(false);
         await appWindow.setMinSize(new LogicalSize(400, 600));
         await appWindow.setSize(new LogicalSize(800, 700));
@@ -67,30 +69,28 @@ function App() {
     if (!timer) return <div className="app-container" style={{padding: '24px', color: 'var(--text-secondary)'}}>Timer missing. <button onClick={() => toggleMiniMode()} className="buy-btn">Go Back</button></div>;
     return (
       <div className="mini-mode-container" data-tauri-drag-region>
-        <div className="timer-card mini-card" style={{ width: '100%', border: 'none', boxShadow: 'none' }}>
-          <div className="timer-header">
-            <h3 className="timer-name">{timer.name}</h3>
-            <button className="icon-btn" onClick={() => toggleMiniMode()} title="Restore Window">
-              <Maximize2 size={16} />
+        <div className="timer-header">
+          <h3 className="timer-name">{timer.name}</h3>
+          <button className="icon-btn" onClick={() => toggleMiniMode()} title="Restore Window">
+            <Maximize2 size={16} />
+          </button>
+        </div>
+        <div className="timer-time" style={{ fontSize: '3.5rem', textAlign: 'center', margin: 'auto' }}>
+          {formatTime(timer.remaining)}
+        </div>
+        <div className="timer-controls">
+          {timer.status === 'running' ? (
+            <button className="control-btn active" onClick={() => updateTimerStatus(timer.id, 'paused')}>
+              <Pause size={18} fill="currentColor" />
             </button>
-          </div>
-          <div className="timer-time" style={{ fontSize: '3rem' }}>
-            {formatTime(timer.remaining)}
-          </div>
-          <div className="timer-controls">
-            {timer.status === 'running' ? (
-              <button className="control-btn active" onClick={() => updateTimerStatus(timer.id, 'paused')}>
-                <Pause size={18} fill="currentColor" />
-              </button>
-            ) : (
-              <button className="control-btn" onClick={() => updateTimerStatus(timer.id, 'running')}>
-                <Play size={18} fill="currentColor" />
-              </button>
-            )}
-            <button className="control-btn" onClick={() => resetTimer(timer.id)}>
-              <Square size={16} fill="currentColor" />
+          ) : (
+            <button className="control-btn" onClick={() => updateTimerStatus(timer.id, 'running')}>
+              <Play size={18} fill="currentColor" />
             </button>
-          </div>
+          )}
+          <button className="control-btn" onClick={() => resetTimer(timer.id)}>
+            <Square size={16} fill="currentColor" />
+          </button>
         </div>
       </div>
     );
