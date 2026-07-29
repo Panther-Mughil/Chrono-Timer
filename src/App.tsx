@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useStore } from './store';
-import { Plus, Timer as TimerIcon, Store, Play, Pause, Square, Trash2, Hexagon } from 'lucide-react';
+import { Plus, Timer as TimerIcon, Store, Play, Pause, Square, Trash2, Hexagon, Maximize2, Minimize2 } from 'lucide-react';
+import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window';
 import './App.css';
 
 const formatTime = (seconds: number) => {
@@ -10,10 +11,39 @@ const formatTime = (seconds: number) => {
 };
 
 function App() {
-  const { activeTab, setActiveTab, coins, tick, timers, addTimer, removeTimer, updateTimerStatus, resetTimer, unlockedItems, unlockItem, addCoins } = useStore();
+  const { activeTab, setActiveTab, coins, tick, timers, addTimer, removeTimer, updateTimerStatus, resetTimer, unlockedItems, unlockItem } = useStore();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [newTimerName, setNewTimerName] = useState('Focus');
   const [newTimerDuration, setNewTimerDuration] = useState('25');
+  const [isMiniMode, setIsMiniMode] = useState(false);
+  const [miniTimerId, setMiniTimerId] = useState<string | null>(null);
+
+  const toggleMiniMode = async (timerId?: string) => {
+    try {
+      const appWindow = getCurrentWindow();
+      if (!isMiniMode && timerId) {
+        await appWindow.setMinSize(new LogicalSize(320, 240));
+        await appWindow.setSize(new LogicalSize(320, 240));
+        await appWindow.setAlwaysOnTop(true);
+        setMiniTimerId(timerId);
+        setIsMiniMode(true);
+      } else {
+        await appWindow.setAlwaysOnTop(false);
+        await appWindow.setMinSize(new LogicalSize(400, 600));
+        await appWindow.setSize(new LogicalSize(800, 700));
+        setMiniTimerId(null);
+        setIsMiniMode(false);
+      }
+    } catch (e) {
+      if (!isMiniMode && timerId) {
+        setMiniTimerId(timerId);
+        setIsMiniMode(true);
+      } else {
+        setMiniTimerId(null);
+        setIsMiniMode(false);
+      }
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,12 +62,46 @@ function App() {
     setNewTimerDuration('25');
   };
 
+  if (isMiniMode && miniTimerId) {
+    const timer = timers.find(t => t.id === miniTimerId);
+    if (!timer) return <div className="app-container" style={{padding: '24px', color: 'var(--text-secondary)'}}>Timer missing. <button onClick={() => toggleMiniMode()} className="buy-btn">Go Back</button></div>;
+    return (
+      <div className="mini-mode-container" data-tauri-drag-region>
+        <div className="timer-card mini-card" style={{ width: '100%', border: 'none', boxShadow: 'none' }}>
+          <div className="timer-header">
+            <h3 className="timer-name">{timer.name}</h3>
+            <button className="icon-btn" onClick={() => toggleMiniMode()} title="Restore Window">
+              <Maximize2 size={16} />
+            </button>
+          </div>
+          <div className="timer-time" style={{ fontSize: '3rem' }}>
+            {formatTime(timer.remaining)}
+          </div>
+          <div className="timer-controls">
+            {timer.status === 'running' ? (
+              <button className="control-btn active" onClick={() => updateTimerStatus(timer.id, 'paused')}>
+                <Pause size={18} fill="currentColor" />
+              </button>
+            ) : (
+              <button className="control-btn" onClick={() => updateTimerStatus(timer.id, 'running')}>
+                <Play size={18} fill="currentColor" />
+              </button>
+            )}
+            <button className="control-btn" onClick={() => resetTimer(timer.id)}>
+              <Square size={16} fill="currentColor" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="app-container">
       <header className="header">
         <h1>Chrono</h1>
         <div className="header-actions">
-          <div className="coin-display" onClick={() => addCoins(5000)} style={{ cursor: 'pointer' }} title="Secret: Click for 5000 coins!">
+          <div className="coin-display">
             <Hexagon size={16} strokeWidth={2.5} />
             <span>{coins}</span>
           </div>
@@ -59,9 +123,14 @@ function App() {
                 <div key={timer.id} className="timer-card">
                   <div className="timer-header">
                     <h3 className="timer-name">{timer.name}</h3>
-                    <button className="icon-btn" onClick={() => removeTimer(timer.id)}>
-                      <Trash2 size={18} />
-                    </button>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button className="icon-btn" onClick={() => toggleMiniMode(timer.id)} title="Mini Mode (Always on Top)">
+                        <Minimize2 size={16} />
+                      </button>
+                      <button className="icon-btn" onClick={() => removeTimer(timer.id)} title="Delete Timer">
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
                   <div className="timer-time">
                     {formatTime(timer.remaining)}

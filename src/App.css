@@ -197,9 +197,10 @@ body {
 /* Shop View */
 .shop-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 24px;
-  max-width: 600px;
+  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -400,4 +401,26 @@ body {
 }
 .btn.secondary:hover {
   color: var(--text-primary);
+}
+
+/* Mini Mode */
+.mini-mode-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-color);
+  padding: 16px;
+  -webkit-app-region: drag; /* Allows the user to drag the window natively */
+}
+
+/* Ensure controls inside drag regions remain clickable */
+.mini-mode-container button {
+  -webkit-app-region: no-drag;
+}
+
+.mini-card {
+  padding: 24px;
+  gap: 16px;
 }
