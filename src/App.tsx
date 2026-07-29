@@ -10,7 +10,7 @@ const formatTime = (seconds: number) => {
 };
 
 function App() {
-  const { activeTab, setActiveTab, coins, tick, timers, addTimer, removeTimer, updateTimerStatus, resetTimer, unlockedItems, unlockItem } = useStore();
+  const { activeTab, setActiveTab, coins, tick, timers, addTimer, removeTimer, updateTimerStatus, resetTimer, unlockedItems, unlockItem, addCoins } = useStore();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [newTimerName, setNewTimerName] = useState('Focus');
   const [newTimerDuration, setNewTimerDuration] = useState('25');
@@ -37,7 +37,7 @@ function App() {
       <header className="header">
         <h1>Chrono</h1>
         <div className="header-actions">
-          <div className="coin-display">
+          <div className="coin-display" onClick={() => addCoins(5000)} style={{ cursor: 'pointer' }} title="Secret: Click for 5000 coins!">
             <Hexagon size={16} strokeWidth={2.5} />
             <span>{coins}</span>
           </div>
